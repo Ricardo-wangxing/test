@@ -2,47 +2,48 @@ package Graph;
 
 /**
  * AbstractGraph
+ * 图的抽象类
  */
 public abstract class AbstractGraph<T> {
-    protected static final int MAX_WEIGHT = 0x0000ffff;
-    protected SeqList<T> vertexlist;
-    public AbstractGraph(int length){
+    protected static final int MAX_WEIGHT = 0x0000ffff;//定义了最大的值
+    protected SeqList<T> vertexlist;//一个顺序表，用来存顶点
+    public AbstractGraph(int length){//构造器1，传入大小，构造相应大小的顺序表
         this.vertexlist = new SeqList<T>(length);
     }
-    public AbstractGraph(){
+    public AbstractGraph(){//构造器2，创建默认大小10的顺序表
         this(10);
     }
-    public int vertexCount(){
+    public int vertexCount(){//定点数量
         return this.vertexlist.size();
     }
-    public String toString(){
+    public String toString(){//返回当前点集情况
         return "顶点集合："+this.vertexlist.toString()+"\n";
     }
-    public T getVertex(int i){
+    public T getVertex(int i){//根据下表返回当前某一个节点的值
         return this.vertexlist.get(i);
     }
-    public void setVertex(int i,T x){
+    public void setVertex(int i,T x){//重设某一个节点
         this.vertexlist.set(i,x);
     }
-    public abstract int insertVertex(T x);
-    public abstract void removeVertex(int i);
-    public abstract int weight(int i,int j);
-    protected abstract int next(int i,int j);
+    public abstract int insertVertex(T x);//插入节点
+    public abstract void removeVertex(int i);//移除节点以及关联的边
+    public abstract int weight(int i,int j);//节点的权
+    protected abstract int next(int i,int j);//返回i在j后的临接节点的序号
 
-    
+    //深度优先遍历，变量i指的是顶点集合的下标（从哪个节点进入）
     public void DFSTraverse(int i)                          
     {
-        boolean[] visited=new boolean[this.vertexCount()];  
+        boolean[] visited=new boolean[this.vertexCount()];  //访问数组，访问过后标记。大小和点集合一样
         int j=i;
         do
-        {   if (!visited[j])                                
+        {   if (!visited[j])//一开始，visited数组都默认为false。当节点还没有访问过的时候进入                                
             {
                 System.out.print("{ ");
-                this.depthfs(j, visited);                   
+                this.depthfs(j, visited);//调用递归函数，打印路径                   
                 System.out.print("} ");
             }
-            j = (j+1) % this.vertexCount();                 
-        } while (j!=i);
+            j = (j+1) % this.vertexCount();//在其他连通分量中找未被访问的节点                 
+        } while (j!=i);//j = i时，
         System.out.println();
     }
      
@@ -161,10 +162,7 @@ public abstract class AbstractGraph<T> {
             dist[j] = this.weight(i,j);
             path[j] = (j!=i && dist[j]<MAX_WEIGHT) ? i : -1;
         }
- 
- 
- 
-        
+     
         for (int j=(i+1)%n; j!=i; j=(j+1)%n)      
         {
             int mindist=MAX_WEIGHT, min=0;        
@@ -184,8 +182,6 @@ public abstract class AbstractGraph<T> {
                     path[k] = min;                    
                 }    
  
- 
- 
         }
 
         System.out.print(this.getVertex(i)+"的单源最短路径：");
@@ -201,18 +197,18 @@ public abstract class AbstractGraph<T> {
             }
         System.out.println();
     }
-    private static String toString(int[] value)         
-    {
-        if (value!=null && value.length>0)
-        {
-            String str="{";
-            int i=0;
-            for(i=0; i<value.length-1; i++)
-                str += (value[i]==MAX_WEIGHT ? "∞" : value[i])+",";
-            return str+(value[i]==MAX_WEIGHT ? "∞" : value[i])+"}";
-        }
-        return null;        
-    }
+    // private static String toString(int[] value)         
+    // {
+    //     if (value!=null && value.length>0)
+    //     {
+    //         String str="{";
+    //         int i=0;
+    //         for(i=0; i<value.length-1; i++)
+    //             str += (value[i]==MAX_WEIGHT ? "∞" : value[i])+",";
+    //         return str+(value[i]==MAX_WEIGHT ? "∞" : value[i])+"}";
+    //     }
+    //     return null;        
+    // }
      
 
    
@@ -282,6 +278,5 @@ public abstract class AbstractGraph<T> {
             System.out.println();
         }
     }
-
 
 }
